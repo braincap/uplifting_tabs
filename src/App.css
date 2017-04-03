@@ -1,3 +1,7 @@
+.container, body, html {
+  background-color: black;
+}
+
 .container {
   position: relative;
   width: 100vw;
@@ -24,19 +28,27 @@
   margin: 0;
   padding: 0;
   font-family: 'Raleway', sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   user-select: none;
   cursor: default;
+
+  backface-visibility: hidden;
 }
 .pic-holder {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 50% ;
   margin-right: -50%;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0%);
   width: 100vw;
   height: 100vh;
   background-size: cover;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.4);
   background-blend-mode: soft-light;
+  animation: fadein 2s forwards;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

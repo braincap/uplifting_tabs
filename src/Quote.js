@@ -1,37 +1,41 @@
 /*global chrome*/
 var request = require("request");
 var React = require('react');
+import ReactTooltip from 'react-tooltip';
 
 var Quote = React.createClass({
   getDefaultProps: function () {
     return {
-      url: 'https://apimk.com/motivationalquotes?get_quote=yes'
+      url: 'https://uplifting-tabs-aa5c4.firebaseio.com/quotes/' + (Math.floor(Math.random() * 8951) + 1) + '.json'
     }
   },
   getInitialState: function () {
     return {
-      text: "",
+      quote: "",
+      author: "",
       visibility: 'hidden'
     }
   },
   componentWillMount: function () {
-
     chrome.storage.local.get('text', function (res) {
-      if (chrome.runtime.lastError || res['text'] === undefined) {
+      if (chrome.runtime.lastError || !res['text'] || res['text'] === 'null') {
         request({
           url: this.props.url,
           json: true,
         }, function (error, response, body) {
           if (!error && response.statusCode === 200) {
             this.setState({
-              text: body[0]['quote'],
+              quote: body['quote'],
+              author: body['author'],
               visibility: 'visible'
             });
           }
         }.bind(this));
       } else {
+        res = JSON.parse(res['text']);
         this.setState({
-          text: res['text'],
+          quote: res['quote'],
+          author: res['author'],
           visibility: 'visible'
         });
       }
@@ -43,14 +47,19 @@ var Quote = React.createClass({
       json: true,
     }, function (error, response, body) {
       if (!error && response.statusCode === 200) {
-        chrome.storage.local.set({ 'text': body[0]['quote'] });
+        chrome.storage.local.set({ 'text': JSON.stringify(body) });
       }
     });
   },
   render: function () {
     return (
-      <div className='quote-holder' style={{ visibility: this.state.visibility }}>
-        <h1 className='quote'>{this.state.text}</h1>
+      <div>
+        <div data-tip data-for='toolquote' className='quote-holder' style={{ visibility: this.state.visibility }}>
+          <h1 className='quote'>{this.state.quote}</h1>
+        </div>
+        <ReactTooltip id='toolquote' place="top" type="dark" effect="solid">
+          <span>{this.state.author}</span>
+        </ReactTooltip>
       </div>
     )
   }

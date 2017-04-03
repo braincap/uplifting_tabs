@@ -33,9 +33,6 @@ var PicHolder = React.createClass({
   }
 });
 
-
-
-
 var App = React.createClass({
   render: function () {
     return (
